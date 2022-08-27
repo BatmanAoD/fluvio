@@ -32,7 +32,9 @@ fi
 
 DISTRO=$(lsb_release -is)
 VERSION=$(lsb_release -sr)
+# TODO: check that this works for Debian
 DIST_VERSION="${DISTRO}_${VERSION}"
+CODENAME=$(lsb_release -sc)
 
 if [[ $EUID -ne 0 ]]; then
    echo "This script must be run as root!"
@@ -74,8 +76,7 @@ case "$DIST_VERSION" in
     Ubuntu_21.10 )   REPO_NAME="deb http://apt.llvm.org/impish/   llvm-toolchain-impish$LLVM_VERSION_STRING main" ;;
 
     * )
-    echo "Distribution '$DISTRO' in version '$VERSION' is not supported by this script (${DIST_VERSION})."
-        exit 2
+        REPO_NAME="deb http://apt.llvm.org/$CODENAME/    llvm-toolchain-$CODENAME$LLVM_VERSION_STRING main" ;;
 esac
 
 
