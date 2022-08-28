@@ -215,6 +215,7 @@ pub enum UnrecoverableCheckStatus {
     #[error("Cannot have multiple versions of fluvio-sys installed")]
     MultipleSystemCharts,
 
+    // TODO #1031 - exit without error?
     #[error("Fluvio chart is already installed")]
     AlreadyInstalled,
 
@@ -234,6 +235,7 @@ pub enum UnrecoverableCheckStatus {
     #[error("Unhandled K8 client error: {0}")]
     UnhandledK8ClientError(String),
 
+    // TODO #1031 - exit without error?
     #[error("Local Fluvio component still exists")]
     ExistingLocalCluster,
 
@@ -685,6 +687,7 @@ struct LocalClusterCheck;
 #[async_trait]
 impl ClusterCheck for LocalClusterCheck {
     async fn perform_check(&self, _pb: &ProgressRenderer) -> CheckResult {
+        // TODO #1031: why is this using `pgrep` rather than attempting Fluvio::connect?
         match Command::new("pgrep").arg("fluvio-run").output() {
             Ok(output) => {
                 if let Some(code) = output.status.code() {
